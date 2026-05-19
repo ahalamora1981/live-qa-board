@@ -1,0 +1,19 @@
+<% questions.forEach(function(q) { %>
+  <div class="question">
+    <div class="body">
+      <p><%= q.content %></p>
+      <div class="meta"><%= new Date(q.created_at).toLocaleTimeString() %></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="vote-badge">▲ <%= q.voteCount %></span>
+      <button class="delete-btn"
+        hx-delete="/api/questions/<%= q.id %>"
+        hx-target="closest .question"
+        hx-swap="outerHTML"
+        hx-confirm="Delete this question?">❌</button>
+    </div>
+  </div>
+<% }); %>
+<% if (questions.length === 0) { %>
+  <p>No questions yet.</p>
+<% } %>

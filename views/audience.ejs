@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q&A Board</title>
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 0 auto; padding: 16px; }
+    form { display: flex; gap: 8px; margin-bottom: 24px; }
+    input[type="text"] { flex: 1; padding: 8px; font-size: 16px; }
+    button { padding: 8px 16px; font-size: 16px; cursor: pointer; }
+    .question { border: 1px solid #ccc; border-radius: 8px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .question .body { flex: 1; }
+    .question p { margin: 0 0 4px 0; }
+    .question .meta { font-size: 12px; color: #666; }
+    .vote-btn { background: none; border: 1px solid #ccc; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 14px; white-space: nowrap; }
+    .vote-btn.voted { background: #e3f2fd; border-color: #2196f3; color: #1565c0; }
+    .vote-btn:disabled { opacity: 0.5; cursor: default; }
+  </style>
+</head>
+<body>
+  <h1>Q&A</h1>
+  <form hx-post="/api/questions" hx-swap="none" hx-on::after-request="if(event.detail.successful){this.reset();htmx.trigger('#question-list', 'refresh')}">
+    <input type="text" name="content" placeholder="Ask a question..." required>
+    <button type="submit">Submit</button>
+  </form>
+  <div id="question-list" hx-get="/questions/list" hx-trigger="every:5s, refresh from:body" hx-swap="innerHTML">
+    <%- include('questions-list', { questions }) %>
+  </div>
+  <script>
+    (function() {
+      if (!localStorage.getItem('anonToken')) {
+        localStorage.setItem('anonToken', crypto.randomUUID());
+      }
+      document.body.addEventListener('htmx:configRequest', function(evt) {
+        evt.detail.headers['X-Anonymous-Token'] = localStorage.getItem('anonToken');
+      });
+    })();
+  </script>
+</body>
+</html>

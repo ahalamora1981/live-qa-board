@@ -1,0 +1,19 @@
+<% questions.forEach(function(q) { %>
+  <div class="question" id="q-<%= q.id %>">
+    <div class="body">
+      <p><%= q.content %></p>
+      <div class="meta"><%= new Date(q.created_at).toLocaleTimeString() %></div>
+    </div>
+    <button class="vote-btn<%= q.hasVoted ? ' voted' : '' %>"
+      hx-post="/api/vote"
+      hx-vals='{"questionId":<%= q.id %>}'
+      hx-swap="none"
+      <%= q.hasVoted ? 'disabled' : '' %>
+      hx-on::after-request="if(event.detail.successful){this.classList.add('voted');this.disabled=true}">
+      ▲ <span class="vote-count"><%= q.voteCount %></span>
+    </button>
+  </div>
+<% }); %>
+<% if (questions.length === 0) { %>
+  <p>No questions yet. Be the first to ask!</p>
+<% } %>
