@@ -1,16 +1,27 @@
 <% questions.forEach(function(q) { %>
-  <div class="question">
+  <div class="question<%= q.isHighlighted ? ' highlighted' : '' %>">
     <div class="body">
       <p><%= q.content %></p>
       <div class="meta"><%= new Date(q.created_at).toLocaleTimeString() %></div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
       <span class="vote-badge">▲ <%= q.voteCount %></span>
+      <% if (q.isHighlighted) { %>
+        <button class="highlight-btn active"
+          hx-post="/api/questions/unhighlight"
+          hx-swap="none"
+          hx-on::after-request="if(event.detail.successful){htmx.trigger('#question-list', 'refresh')}">★ Unhighlight</button>
+      <% } else { %>
+        <button class="highlight-btn"
+          hx-post="/api/questions/<%= q.id %>/highlight"
+          hx-swap="none"
+          hx-on::after-request="if(event.detail.successful){htmx.trigger('#question-list', 'refresh')}">☆ Highlight</button>
+      <% } %>
       <button class="delete-btn"
         hx-delete="/api/questions/<%= q.id %>"
-        hx-target="closest .question"
-        hx-swap="outerHTML"
-        hx-confirm="Delete this question?">❌</button>
+        hx-swap="none"
+        hx-confirm="Delete this question?"
+        hx-on::after-request="if(event.detail.successful){htmx.trigger('#question-list', 'refresh')}">❌</button>
     </div>
   </div>
 <% }); %>

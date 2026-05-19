@@ -17,6 +17,7 @@
     .vote-btn { background: none; border: 1px solid #ccc; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 14px; white-space: nowrap; }
     .vote-btn.voted { background: #e3f2fd; border-color: #2196f3; color: #1565c0; }
     .vote-btn:disabled { opacity: 0.5; cursor: default; }
+    .question.highlighted { border-color: #ff9800; background: #fff8e1; }
   </style>
 </head>
 <body>
@@ -25,7 +26,7 @@
     <input type="text" name="content" placeholder="Ask a question..." required>
     <button type="submit">Submit</button>
   </form>
-  <div id="question-list" hx-get="/questions/list" hx-trigger="every:5s, refresh from:body" hx-swap="innerHTML">
+  <div id="question-list" hx-get="/questions/list" hx-trigger="every:5s, refresh from:#question-list" hx-swap="innerHTML">
     <%- include('questions-list', { questions }) %>
   </div>
   <script>

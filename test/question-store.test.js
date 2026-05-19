@@ -141,4 +141,36 @@ describe('QuestionStore', () => {
       assert.strictEqual(time, null);
     });
   });
+
+  describe('highlight', () => {
+    it('sets a question as highlighted', () => {
+      const q = store.create('Q?');
+      store.highlight(q.id);
+      assert.strictEqual(store.getHighlighted().id, q.id);
+    });
+
+    it('only one question can be highlighted at a time', () => {
+      const q1 = store.create('Q1');
+      const q2 = store.create('Q2');
+      store.highlight(q1.id);
+      store.highlight(q2.id);
+      assert.strictEqual(store.getHighlighted().id, q2.id);
+    });
+
+    it('unhighlight clears the highlighted question', () => {
+      const q = store.create('Q?');
+      store.highlight(q.id);
+      store.unhighlight();
+      assert.strictEqual(store.getHighlighted(), null);
+    });
+
+    it('listWithDetails includes isHighlighted field', () => {
+      const q1 = store.create('Q1');
+      const q2 = store.create('Q2');
+      store.highlight(q1.id);
+      const list = store.listWithDetails();
+      assert.strictEqual(list.find(x => x.id === q1.id).isHighlighted, true);
+      assert.strictEqual(list.find(x => x.id === q2.id).isHighlighted, false);
+    });
+  });
 });

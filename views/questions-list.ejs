@@ -1,5 +1,5 @@
 <% questions.forEach(function(q) { %>
-  <div class="question" id="q-<%= q.id %>">
+  <div class="question<%= q.isHighlighted ? ' highlighted' : '' %>" id="q-<%= q.id %>">
     <div class="body">
       <p><%= q.content %></p>
       <div class="meta"><%= new Date(q.created_at).toLocaleTimeString() %></div>
