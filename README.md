@@ -14,7 +14,7 @@ Open `http://localhost:3000` (audience) and `http://localhost:3000/presenter` (s
 ## How It Works
 
 - **Audience page** — submit questions, upvote others' questions. No login needed (anonymous token stored in localStorage). One vote per person per question.
-- **Presenter page** — shows a QR code for the audience to join, auto-refreshing question list, and delete buttons for inappropriate questions.
+- **Presenter page** — shows a QR code for the audience to join, auto-refreshing question list, delete buttons for inappropriate questions, and highlight the question currently being answered.
 - **Sorting** — questions ranked by vote count (descending), ties broken by submission time (ascending). Auto-refreshes every 5s via htmx polling.
 
 ## Stack
@@ -29,4 +29,4 @@ Open `http://localhost:3000` (audience) and `http://localhost:3000/presenter` (s
 npm test
 ```
 
-36 tests covering VoteGuard (rate limit + dedup), QuestionStore (CRUD + votes), API routes, token middleware, and QR service.
+44 tests covering VoteGuard (rate limit + dedup), QuestionStore (CRUD + votes + highlight), API routes, token middleware, and QR service.
