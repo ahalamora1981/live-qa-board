@@ -26,7 +26,7 @@
     <input type="text" name="content" placeholder="Ask a question..." required>
     <button type="submit">Submit</button>
   </form>
-  <div id="question-list" hx-get="/questions/list" hx-trigger="every:5s, refresh from:body" hx-swap="innerHTML">
+  <div id="question-list" hx-get="/questions/list" hx-trigger="every:5s, refresh from:#question-list" hx-swap="innerHTML">
     <%- include('questions-list', { questions }) %>
   </div>
   <script>

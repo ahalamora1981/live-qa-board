@@ -10,12 +10,12 @@
         <button class="highlight-btn active"
           hx-post="/api/questions/unhighlight"
           hx-swap="none"
-          hx-on::after-request="htmx.trigger('#question-list', 'refresh')">★ Unhighlight</button>
+          hx-on::after-request="if(event.detail.successful){htmx.trigger('#question-list', 'refresh')}">★ Unhighlight</button>
       <% } else { %>
         <button class="highlight-btn"
           hx-post="/api/questions/<%= q.id %>/highlight"
           hx-swap="none"
-          hx-on::after-request="htmx.trigger('#question-list', 'refresh')">☆ Highlight</button>
+          hx-on::after-request="if(event.detail.successful){htmx.trigger('#question-list', 'refresh')}">☆ Highlight</button>
       <% } %>
       <button class="delete-btn"
         hx-delete="/api/questions/<%= q.id %>"

@@ -28,7 +28,7 @@
     <img src="<%= qrDataUrl %>" alt="QR Code">
     <p><%= origin %></p>
   </div>
-  <div id="question-list" hx-get="/presenter/list" hx-trigger="every:5s, refresh from:body" hx-swap="innerHTML">
+  <div id="question-list" hx-get="/presenter/list" hx-trigger="every:5s, refresh from:#question-list" hx-swap="innerHTML">
     <%- include('presenter-questions', { questions }) %>
   </div>
 </body>
