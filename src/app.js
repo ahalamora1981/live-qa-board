@@ -82,6 +82,21 @@ function createApp(store) {
     });
   });
 
+  app.post('/api/questions/:id/highlight', (req, res) => {
+    const id = Number(req.params.id);
+    const question = store.find(id);
+    if (!question) {
+      return res.status(404).json({ error: 'question not found' });
+    }
+    store.highlight(id);
+    res.json({ success: true });
+  });
+
+  app.post('/api/questions/unhighlight', (req, res) => {
+    store.unhighlight();
+    res.json({ success: true });
+  });
+
   app.get('/', (req, res) => {
     const token = req.headers['x-anonymous-token'] || null;
     res.render('audience', { questions: store.listWithDetails(token) });

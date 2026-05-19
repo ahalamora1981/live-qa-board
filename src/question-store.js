@@ -6,9 +6,11 @@ class QuestionStore {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         content TEXT NOT NULL,
         created_at TEXT DEFAULT (datetime('now')),
-        deleted INTEGER DEFAULT 0
+        deleted INTEGER DEFAULT 0,
+        highlighted INTEGER DEFAULT 0
       )
     `);
+    try { db.exec('ALTER TABLE questions ADD COLUMN highlighted INTEGER DEFAULT 0'); } catch (e) {}
     db.exec(`
       CREATE TABLE IF NOT EXISTS votes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,6 +71,22 @@ class QuestionStore {
     return row ? row.created_at : null;
   }
 
+  highlight(id) {
+    const txn = this.db.transaction(() => {
+      this.db.prepare('UPDATE questions SET highlighted = 0 WHERE highlighted = 1').run();
+      this.db.prepare('UPDATE questions SET highlighted = 1 WHERE id = ? AND deleted = 0').run(id);
+    });
+    txn();
+  }
+
+  unhighlight() {
+    this.db.prepare('UPDATE questions SET highlighted = 0 WHERE highlighted = 1').run();
+  }
+
+  getHighlighted() {
+    return this.db.prepare('SELECT * FROM questions WHERE highlighted = 1 AND deleted = 0').get() || null;
+  }
+
   listWithDetails(token) {
     const rows = this.db.prepare(`
       SELECT q.*,
@@ -83,6 +101,7 @@ class QuestionStore {
       ...r,
       voteCount: r.voteCount,
       hasVoted: token ? Boolean(r.hasVoted) : false,
+      isHighlighted: Boolean(r.highlighted),
     }));
   }
 }

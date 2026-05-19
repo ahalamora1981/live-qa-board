@@ -157,4 +157,40 @@ describe('API', () => {
         .expect(404);
     });
   });
+
+  describe('POST /api/questions/:id/highlight', () => {
+    it('returns 200 and highlights a question', async () => {
+      const q = store.create('Highlight me');
+      const res = await supertest(app)
+        .post(`/api/questions/${q.id}/highlight`)
+        .expect(200);
+      assert.strictEqual(res.body.success, true);
+      assert.strictEqual(store.getHighlighted().id, q.id);
+    });
+
+    it('returns 404 on non-existent question', async () => {
+      await supertest(app)
+        .post('/api/questions/999/highlight')
+        .expect(404);
+    });
+
+    it('GET /api/questions includes isHighlighted field', async () => {
+      const q = store.create('Q?');
+      await supertest(app).post(`/api/questions/${q.id}/highlight`);
+      const res = await supertest(app).get('/api/questions');
+      assert.strictEqual(res.body[0].isHighlighted, true);
+    });
+  });
+
+  describe('POST /api/questions/unhighlight', () => {
+    it('returns 200 and clears highlight', async () => {
+      const q = store.create('Q?');
+      store.highlight(q.id);
+      const res = await supertest(app)
+        .post('/api/questions/unhighlight')
+        .expect(200);
+      assert.strictEqual(res.body.success, true);
+      assert.strictEqual(store.getHighlighted(), null);
+    });
+  });
 });
